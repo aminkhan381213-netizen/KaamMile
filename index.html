@@ -684,4 +684,82 @@ window.showApplications = async function(){
 
           <p>📍 ${a.location || ""}</p>
 
-          <p>💰 ${a.salary
+          <p>💰 ${a.salary || ""}</p>
+
+          <p>📱 ${a.mobile || ""}</p>
+
+          <p>
+            🟢 <b>${a.status || "Submitted"}</b>
+          </p>
+
+        </div>
+
+      `;
+
+    });
+
+
+    list.innerHTML = html;
+
+
+  }catch(error){
+
+    console.error(error);
+
+    list.innerHTML =
+      '<div class="empty">' +
+      'आवेदन लोड नहीं हो पाए। Firebase Rules जाँचें।' +
+      '</div>';
+
+  }
+
+};
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+window.logout = function(){
+
+  localStorage.removeItem("kaamMileName");
+
+  localStorage.removeItem("kaamMileMobile");
+
+
+  document.getElementById("appPage")
+    .classList.add("hidden");
+
+  document.getElementById("loginPage")
+    .classList.remove("hidden");
+
+
+  document.getElementById("name").value = "";
+
+  document.getElementById("mobile").value = "";
+
+};
+
+
+/* =========================
+   AUTO LOGIN
+========================= */
+
+window.addEventListener("load",function(){
+
+  const mobile =
+    localStorage.getItem("kaamMileMobile");
+
+
+  if(mobile){
+
+    openApp();
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
