@@ -76,6 +76,14 @@ button{
   background:#16a34a;
 }
 
+.add-job{
+  background:#7c3aed;
+}
+
+.back{
+  background:#64748b;
+}
+
 .job{
   border:1px solid #ddd;
   padding:15px;
@@ -152,35 +160,49 @@ button{
 <!-- APP -->
 <div id="appPage" class="container hidden">
 
-  <div class="card">
+  <!-- HOME -->
+  <div id="homePage">
 
-    <h2>👋 स्वागत है!</h2>
+    <div class="card">
 
-    <p>
-      नाम: <b id="showName"></b>
-    </p>
+      <h2>👋 स्वागत है!</h2>
 
-    <p>
-      मोबाइल नंबर: <b id="showMobile"></b>
-    </p>
+      <p>
+        नाम: <b id="showName"></b>
+      </p>
 
-    <button onclick="showJobs()">
-      🔎 Jobs खोजें
-    </button>
+      <p>
+        मोबाइल नंबर: <b id="showMobile"></b>
+      </p>
 
-    <button onclick="showApplications()">
-      📋 मेरे आवेदन
-    </button>
+      <button onclick="showJobs()">
+        🔎 Jobs खोजें
+      </button>
 
-    <button class="logout" onclick="logout()">
-      Logout
-    </button>
+      <button onclick="showApplications()">
+        📋 मेरे आवेदन
+      </button>
+
+      <!-- सिर्फ Admin के लिए -->
+      <button
+        id="addJobButton"
+        class="add-job hidden"
+        onclick="showAddJob()"
+      >
+        ➕ Job जोड़ें
+      </button>
+
+      <button class="logout" onclick="logout()">
+        Logout
+      </button>
+
+    </div>
 
   </div>
 
 
   <!-- JOBS -->
-  <div id="jobsPage">
+  <div id="jobsPage" class="hidden">
 
     <div class="card">
 
@@ -202,6 +224,10 @@ button{
 
       </select>
 
+      <button class="back" onclick="goHome()">
+        ⬅️ वापस
+      </button>
+
     </div>
 
     <div id="jobsList"></div>
@@ -221,6 +247,75 @@ button{
           आवेदन लोड हो रहे हैं...
         </div>
       </div>
+
+      <button class="back" onclick="goHome()">
+        ⬅️ वापस
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ADD JOB -->
+  <div id="addJobPage" class="hidden">
+
+    <div class="card">
+
+      <h2>➕ नई Job जोड़ें</h2>
+
+      <label>Job का नाम</label>
+
+      <input
+        id="newJobTitle"
+        type="text"
+        placeholder="जैसे: Computer Operator"
+      >
+
+      <label>Company</label>
+
+      <input
+        id="newJobCompany"
+        type="text"
+        placeholder="Company का नाम"
+      >
+
+      <label>Location</label>
+
+      <select id="newJobLocation">
+
+        <option value="">जगह चुनें</option>
+        <option value="Balotra">Balotra</option>
+        <option value="Jodhpur">Jodhpur</option>
+        <option value="Jaipur">Jaipur</option>
+
+      </select>
+
+      <label>Salary</label>
+
+      <input
+        id="newJobSalary"
+        type="text"
+        placeholder="जैसे: ₹15,000 - ₹20,000"
+      >
+
+      <label>Job Type</label>
+
+      <select id="newJobType">
+
+        <option value="Full Time">Full Time</option>
+        <option value="Part Time">Part Time</option>
+        <option value="Work From Home">Work From Home</option>
+
+      </select>
+
+      <button class="add-job" onclick="addJob()">
+        ✅ Job सेव करें
+      </button>
+
+      <button class="back" onclick="goHome()">
+        ⬅️ वापस
+      </button>
 
     </div>
 
@@ -271,6 +366,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
+
+
+/* =========================
+   ADMIN MOBILE
+========================= */
+
+const ADMIN_MOBILE = "7976900315";
 
 
 /* =========================
@@ -396,7 +498,20 @@ function openApp(){
     .innerText = mobile;
 
 
-  loadJobs();
+  if(mobile === ADMIN_MOBILE){
+
+    document.getElementById("addJobButton")
+      .classList.remove("hidden");
+
+  }else{
+
+    document.getElementById("addJobButton")
+      .classList.add("hidden");
+
+  }
+
+
+  showJobs();
 
 }
 
@@ -480,66 +595,7 @@ window.loadJobs = function(){
    APPLY → FIREBASE
 ========================= */
 
-  window.applyJob = async function(jobId){
-
-  const name = localStorage.getItem("kaamMileName");
-  const mobile = localStorage.getItem("kaamMileMobile");
-
-  if(!mobile){
-    alert("पहले Login करें।");
-    return;
-  }
-
-  const job = jobs.find(j => j.id === jobId);
-
-  if(!job){
-    alert("Job नहीं मिली।");
-    return;
-  }
-
-  try{
-
-    // इसी मोबाइल + इसी Job का आवेदन पहले हुआ है या नहीं
-    const q = query(
-      collection(db,"Applications"),
-      where("mobile","==",mobile),
-      where("JobId","==",String(job.id))
-    );
-
-    const existing = await getDocs(q);
-
-    if(!existing.empty){
-      alert("आप इस Job के लिए पहले ही आवेदन कर चुके हैं।");
-      return;
-    }
-
-    // नया आवेदन Firebase में सेव
-    await addDoc(
-      collection(db,"Applications"),
-      {
-        Job: job.title,
-        JobId: String(job.id),
-        company: job.company,
-        location: job.location,
-        salary: job.salary,
-        mobile: mobile,
-        name: name,
-        status: "Application submitted",
-        createdat: serverTimestamp()
-      }
-    );
-
-    alert("आपका आवेदन सफलतापूर्वक हो गया! 🎉");
-
-  }catch(error){
-
-    console.error(error);
-
-    alert("आवेदन सेव नहीं हुआ। Firebase Rules जाँचें।");
-
-  }
-
-};
+window.applyJob = async function(jobId){
 
   const name =
     localStorage.getItem("kaamMileName");
@@ -572,8 +628,6 @@ window.loadJobs = function(){
 
   try{
 
-    /* पहले देखेंगे कि इसी Job पर आवेदन हो चुका है या नहीं */
-
     const q = query(
 
       collection(db,"Applications"),
@@ -600,10 +654,10 @@ window.loadJobs = function(){
     }
 
 
-    /* Firebase में आवेदन सेव */
-
     await addDoc(
+
       collection(db,"Applications"),
+
       {
 
         Job:job.title,
@@ -625,11 +679,12 @@ window.loadJobs = function(){
         createdat:serverTimestamp()
 
       }
+
     );
 
 
     alert(
-      "आपका आवेदन Firebase में सफलतापूर्वक सेव हो गया! 🎉"
+      "आपका आवेदन सफलतापूर्वक हो गया! 🎉"
     );
 
 
@@ -652,10 +707,16 @@ window.loadJobs = function(){
 
 window.showJobs = function(){
 
+  document.getElementById("homePage")
+    .classList.add("hidden");
+
   document.getElementById("jobsPage")
     .classList.remove("hidden");
 
   document.getElementById("applicationsPage")
+    .classList.add("hidden");
+
+  document.getElementById("addJobPage")
     .classList.add("hidden");
 
   loadJobs();
@@ -669,11 +730,17 @@ window.showJobs = function(){
 
 window.showApplications = async function(){
 
+  document.getElementById("homePage")
+    .classList.add("hidden");
+
   document.getElementById("jobsPage")
     .classList.add("hidden");
 
   document.getElementById("applicationsPage")
     .classList.remove("hidden");
+
+  document.getElementById("addJobPage")
+    .classList.add("hidden");
 
 
   const mobile =
@@ -771,6 +838,196 @@ window.showApplications = async function(){
       '</div>';
 
   }
+
+};
+
+
+/* =========================
+   SHOW ADD JOB
+========================= */
+
+window.showAddJob = function(){
+
+  const mobile =
+    localStorage.getItem("kaamMileMobile");
+
+
+  if(mobile !== ADMIN_MOBILE){
+
+    alert("यह सुविधा केवल Admin के लिए है।");
+
+    return;
+
+  }
+
+
+  document.getElementById("homePage")
+    .classList.add("hidden");
+
+  document.getElementById("jobsPage")
+    .classList.add("hidden");
+
+  document.getElementById("applicationsPage")
+    .classList.add("hidden");
+
+  document.getElementById("addJobPage")
+    .classList.remove("hidden");
+
+};
+
+
+/* =========================
+   ADD JOB → FIREBASE
+========================= */
+
+window.addJob = async function(){
+
+  const mobile =
+    localStorage.getItem("kaamMileMobile");
+
+
+  if(mobile !== ADMIN_MOBILE){
+
+    alert("यह सुविधा केवल Admin के लिए है।");
+
+    return;
+
+  }
+
+
+  const title =
+    document.getElementById("newJobTitle")
+    .value.trim();
+
+
+  const company =
+    document.getElementById("newJobCompany")
+    .value.trim();
+
+
+  const location =
+    document.getElementById("newJobLocation")
+    .value;
+
+
+  const salary =
+    document.getElementById("newJobSalary")
+    .value.trim();
+
+
+  const type =
+    document.getElementById("newJobType")
+    .value;
+
+
+  if(!title){
+
+    alert("Job का नाम लिखें।");
+
+    return;
+
+  }
+
+
+  if(!company){
+
+    alert("Company का नाम लिखें।");
+
+    return;
+
+  }
+
+
+  if(!location){
+
+    alert("Location चुनें।");
+
+    return;
+
+  }
+
+
+  if(!salary){
+
+    alert("Salary लिखें।");
+
+    return;
+
+  }
+
+
+  try{
+
+    await addDoc(
+
+      collection(db,"Job"),
+
+      {
+
+        title:title,
+
+        company:company,
+
+        location:location,
+
+        salary:salary,
+
+        type:type,
+
+        createdAt:serverTimestamp()
+
+      }
+
+    );
+
+
+    alert("नई Job सफलतापूर्वक जोड़ दी गई! 🎉");
+
+
+    document.getElementById("newJobTitle").value = "";
+
+    document.getElementById("newJobCompany").value = "";
+
+    document.getElementById("newJobLocation").value = "";
+
+    document.getElementById("newJobSalary").value = "";
+
+    document.getElementById("newJobType").value = "Full Time";
+
+
+    showJobs();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Job सेव नहीं हुई। Firebase Rules जाँचें।"
+    );
+
+  }
+
+};
+
+
+/* =========================
+   HOME
+========================= */
+
+window.goHome = function(){
+
+  document.getElementById("jobsPage")
+    .classList.add("hidden");
+
+  document.getElementById("applicationsPage")
+    .classList.add("hidden");
+
+  document.getElementById("addJobPage")
+    .classList.add("hidden");
+
+  document.getElementById("homePage")
+    .classList.remove("hidden");
 
 };
 
