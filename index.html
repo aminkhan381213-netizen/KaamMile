@@ -481,6 +481,68 @@ window.loadJobs = function(){
 
 window.applyJob = async function(jobId){
 
+  const name = localStorage.getItem("kaamMileName");
+  const mobile = localStorage.getItem("kaamMileMobile");
+
+  if(!mobile){
+    alert("पहले Login करें।");
+    return;
+  }
+
+  const job = jobs.find(j => j.id === jobId);
+
+  if(!job){
+    alert("Job नहीं मिली।");
+    return;
+  }
+
+  try{
+
+    // इसी Mobile + इसी Job की जाँच
+    const q = query(
+      collection(db, "Applications"),
+      where("mobile", "==", mobile),
+      where("JobId", "==", String(job.id))
+    );
+
+    const existing = await getDocs(q);
+
+    // अगर इसी Job पर पहले आवेदन हो चुका है
+    if(!existing.empty){
+
+      alert("आप इस Job के लिए पहले ही आवेदन कर चुके हैं।");
+
+      return;
+    }
+
+    // नया आवेदन Firebase में सेव
+    await addDoc(
+      collection(db, "Applications"),
+      {
+        Job: job.title,
+        JobId: String(job.id),
+        company: job.company,
+        location: job.location,
+        salary: job.salary,
+        mobile: mobile,
+        name: name,
+        status: "Application submitted",
+        createdat: serverTimestamp()
+      }
+    );
+
+    alert("आपका आवेदन सफलतापूर्वक सेव हो गया! 🎉");
+
+  }catch(error){
+
+    console.error("Application Error:", error);
+
+    alert("आवेदन सेव नहीं हुआ। Firebase Rules जाँचें।");
+
+  }
+
+};
+
   const name =
     localStorage.getItem("kaamMileName");
 
