@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="hi">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>KaamMile - Job App</title>
 
 <style>
+
 *{
   box-sizing:border-box;
 }
@@ -70,20 +75,12 @@ button{
   font-weight:bold;
 }
 
-button:active{
-  transform:scale(.98);
-}
-
 .logout{
   background:#e53935;
 }
 
 .apply{
   background:#16a34a;
-}
-
-.applied{
-  background:#777;
 }
 
 .job{
@@ -103,7 +100,7 @@ button:active{
 }
 
 .hidden{
-  display:none !important;
+  display:none;
 }
 
 .empty{
@@ -112,27 +109,34 @@ button:active{
   padding:20px;
 }
 
-.message{
-  padding:12px;
-  border-radius:10px;
-  margin-top:10px;
-  text-align:center;
+.success{
+  color:#16a34a;
   font-weight:bold;
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
+<!-- HEADER -->
+
 <div class="header">
+
   <h1>KaamMile</h1>
-  <p>अपने लिए नौकरी खोजें और आवेदन करें</p>
+
+  <p>
+    अपने लिए नौकरी खोजें और आवेदन करें
+  </p>
+
 </div>
 
 
-<!-- =========================
-     LOGIN PAGE
-========================= -->
+
+<!-- LOGIN PAGE -->
 
 <div id="loginPage" class="container">
 
@@ -157,27 +161,26 @@ button:active{
     <input
       id="mobile"
       type="tel"
-      inputmode="numeric"
       maxlength="10"
       placeholder="जैसे: 9876543210"
     >
 
-    <button id="loginButton" type="button">
+    <button onclick="login()">
       Login करें
     </button>
-
-    <div id="loginMessage"></div>
 
   </div>
 
 </div>
 
 
-<!-- =========================
-     APP PAGE
-========================= -->
+
+<!-- APP PAGE -->
 
 <div id="appPage" class="container hidden">
+
+
+  <!-- USER CARD -->
 
   <div class="card">
 
@@ -193,24 +196,26 @@ button:active{
       <b id="showMobile"></b>
     </p>
 
-    <button id="jobsButton" type="button">
+    <button onclick="showJobs()">
       🔎 Jobs खोजें
     </button>
 
-    <button id="applicationsButton" type="button">
+    <button onclick="showApplications()">
       📋 मेरे आवेदन
     </button>
 
-    <button id="logoutButton" class="logout" type="button">
+    <button
+      class="logout"
+      onclick="logout()"
+    >
       Logout
     </button>
 
   </div>
 
 
-  <!-- =========================
-       JOBS PAGE
-  ========================= -->
+
+  <!-- JOBS PAGE -->
 
   <div id="jobsPage">
 
@@ -222,11 +227,17 @@ button:active{
         id="search"
         type="text"
         placeholder="Job का नाम खोजें..."
+        oninput="loadJobs()"
       >
 
-      <select id="location">
+      <select
+        id="location"
+        onchange="loadJobs()"
+      >
 
-        <option value="">सभी जगह</option>
+        <option value="">
+          सभी जगह
+        </option>
 
         <option value="Balotra">
           Balotra
@@ -244,16 +255,25 @@ button:active{
 
     </div>
 
-    <div id="jobsList"></div>
+
+    <div id="jobsList">
+
+      <div class="card empty">
+        ⏳ Jobs लोड हो रही हैं...
+      </div>
+
+    </div>
 
   </div>
 
 
-  <!-- =========================
-       APPLICATIONS PAGE
-  ========================= -->
 
-  <div id="applicationsPage" class="hidden">
+  <!-- APPLICATIONS PAGE -->
+
+  <div
+    id="applicationsPage"
+    class="hidden"
+  >
 
     <div class="card">
 
@@ -271,18 +291,21 @@ button:active{
 
   </div>
 
+
 </div>
 
 
-<!-- =========================
-     FIREBASE
-========================= -->
+
+<!-- FIREBASE -->
 
 <script type="module">
 
-import { initializeApp }
 
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {
+  initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 
 import {
@@ -294,18 +317,20 @@ import {
   where,
   serverTimestamp
 }
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
 /* =========================
    FIREBASE CONFIG
 ========================= */
 
+
 const firebaseConfig = {
 
   apiKey:
-  "AIzaSyBVDRf48Ae6RC_zksyovEVTevC0rZV0i0",
+  "AIzaSyBVDRf48Ae6RC_zksyovEVteC0rZV0i0",
 
   authDomain:
   "kaammile-21752.firebaseapp.com",
@@ -325,140 +350,143 @@ const firebaseConfig = {
 };
 
 
-const app = initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
+const app =
+  initializeApp(firebaseConfig);
+
+
+const db =
+  getFirestore(app);
+
 
 
 /* =========================
-   JOBS
+   FIREBASE JOBS
 ========================= */
 
-const jobs = [
 
-  {
-    id:1,
-    title:"Data Entry Operator",
-    company:"KaamMile Jobs",
-    location:"Jaipur",
-    salary:"₹12,000 - ₹18,000",
-    type:"Full Time"
-  },
+let jobs = [];
 
-  {
-    id:2,
-    title:"Computer Operator",
-    company:"Local Company",
-    location:"Jodhpur",
-    salary:"₹10,000 - ₹16,000",
-    type:"Full Time"
-  },
 
-  {
-    id:3,
-    title:"Sales Executive",
-    company:"KaamMile Business",
-    location:"Balotra",
-    salary:"₹12,000 - ₹20,000",
-    type:"Full Time"
-  },
 
-  {
-    id:4,
-    title:"Customer Support",
-    company:"KaamMile Support",
-    location:"Jaipur",
-    salary:"₹15,000 - ₹25,000",
-    type:"Work From Home"
-  },
+async function loadJobsFromFirebase(){
 
-  {
-    id:5,
-    title:"Office Assistant",
-    company:"Local Business",
-    location:"Balotra",
-    salary:"₹9,000 - ₹14,000",
-    type:"Full Time"
+  try{
+
+    const snapshot =
+      await getDocs(
+        collection(db,"Job")
+      );
+
+
+    jobs = [];
+
+
+    snapshot.forEach(doc => {
+
+      const data =
+        doc.data();
+
+
+      jobs.push({
+
+        id: doc.id,
+
+        title:
+          data.title ||
+          data.Title ||
+          "Job",
+
+        company:
+          data.company ||
+          data.Company ||
+          "",
+
+        location:
+          data.location ||
+          "",
+
+        salary:
+          data.salary ||
+          "",
+
+        type:
+          data.type ||
+          "Full Time"
+
+      });
+
+    });
+
+
+    loadJobs();
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    document.getElementById(
+      "jobsList"
+    ).innerHTML =
+
+      '<div class="card empty">' +
+
+      '❌ Jobs लोड नहीं हो पाईं।' +
+
+      '<br><br>' +
+
+      'Firebase Rules जाँचें।' +
+
+      '</div>';
+
   }
 
-];
+}
 
-
-/* =========================
-   ELEMENTS
-========================= */
-
-const loginPage =
-  document.getElementById("loginPage");
-
-const appPage =
-  document.getElementById("appPage");
-
-const nameInput =
-  document.getElementById("name");
-
-const mobileInput =
-  document.getElementById("mobile");
-
-const showName =
-  document.getElementById("showName");
-
-const showMobile =
-  document.getElementById("showMobile");
-
-const jobsPage =
-  document.getElementById("jobsPage");
-
-const applicationsPage =
-  document.getElementById("applicationsPage");
-
-const jobsList =
-  document.getElementById("jobsList");
-
-const applicationsList =
-  document.getElementById("applicationsList");
-
-const searchInput =
-  document.getElementById("search");
-
-const locationInput =
-  document.getElementById("location");
 
 
 /* =========================
    LOGIN
 ========================= */
 
-document
-.getElementById("loginButton")
-.addEventListener("click", function(){
+
+window.login = function(){
 
   const name =
-    nameInput.value.trim();
+    document.getElementById(
+      "name"
+    ).value.trim();
+
 
   const mobile =
-    mobileInput.value.trim();
+    document.getElementById(
+      "mobile"
+    ).value.trim();
 
 
   if(name === ""){
 
-    alert("कृपया अपना नाम लिखें।");
-
-    nameInput.focus();
+    alert(
+      "कृपया अपना नाम लिखें।"
+    );
 
     return;
+
   }
 
 
-  if(!/^[0-9]{10}$/.test(mobile)){
+  if(
+    !/^[0-9]{10}$/.test(mobile)
+  ){
 
     alert(
       "कृपया सही 10 अंकों का मोबाइल नंबर डालें।"
     );
 
-    mobileInput.focus();
-
     return;
+
   }
 
 
@@ -466,6 +494,7 @@ document
     "kaamMileName",
     name
   );
+
 
   localStorage.setItem(
     "kaamMileMobile",
@@ -475,217 +504,275 @@ document
 
   openApp();
 
-});
+};
+
 
 
 /* =========================
    OPEN APP
 ========================= */
 
+
 function openApp(){
 
   const name =
-    localStorage.getItem("kaamMileName");
+    localStorage.getItem(
+      "kaamMileName"
+    );
+
 
   const mobile =
-    localStorage.getItem("kaamMileMobile");
+    localStorage.getItem(
+      "kaamMileMobile"
+    );
 
 
-  if(!name || !mobile){
+  if(!mobile){
 
     return;
+
   }
 
 
-  loginPage.classList.add("hidden");
-
-  appPage.classList.remove("hidden");
-
-
-  showName.innerText =
-    name;
-
-  showMobile.innerText =
-    mobile;
+  document
+    .getElementById("loginPage")
+    .classList.add("hidden");
 
 
-  showJobs();
+  document
+    .getElementById("appPage")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("showName")
+    .innerText =
+      name || "";
+
+
+  document
+    .getElementById("showMobile")
+    .innerText =
+      mobile;
+
+
+  loadJobsFromFirebase();
 
 }
+
+
+
+/* =========================
+   SHOW JOBS
+========================= */
+
+
+window.showJobs = function(){
+
+  document
+    .getElementById("jobsPage")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("applicationsPage")
+    .classList.add("hidden");
+
+
+  loadJobsFromFirebase();
+
+};
+
 
 
 /* =========================
    LOAD JOBS
 ========================= */
 
-function loadJobs(){
+
+window.loadJobs = function(){
+
+  const searchElement =
+    document.getElementById(
+      "search"
+    );
+
+
+  const locationElement =
+    document.getElementById(
+      "location"
+    );
+
+
+  const list =
+    document.getElementById(
+      "jobsList"
+    );
+
+
+  if(!searchElement || !locationElement){
+
+    return;
+
+  }
+
 
   const search =
-    searchInput.value
-    .trim()
-    .toLowerCase();
+    searchElement.value
+      .toLowerCase()
+      .trim();
 
 
   const location =
-    locationInput.value;
+    locationElement.value;
 
 
   const filtered =
-    jobs.filter(function(job){
+    jobs.filter(job => {
+
+
+      const title =
+        (job.title || "")
+        .toLowerCase();
+
+
+      const company =
+        (job.company || "")
+        .toLowerCase();
+
 
       const searchMatch =
-        job.title
-        .toLowerCase()
-        .includes(search)
-
-        ||
-
-        job.company
-        .toLowerCase()
-        .includes(search);
+        title.includes(search) ||
+        company.includes(search);
 
 
       const locationMatch =
-        location === ""
-
-        ||
-
+        location === "" ||
         job.location === location;
 
 
-      return searchMatch &&
-             locationMatch;
+      return (
+        searchMatch &&
+        locationMatch
+      );
 
     });
 
 
+
   if(filtered.length === 0){
 
-    jobsList.innerHTML = `
+    list.innerHTML =
 
-      <div class="card empty">
+      '<div class="card empty">' +
 
-        😔 कोई Job नहीं मिली।
+      '😔 कोई Job नहीं मिली।' +
 
-      </div>
-
-    `;
+      '</div>';
 
     return;
+
   }
 
 
-  jobsList.innerHTML =
-    filtered.map(function(job){
 
-      return `
+  list.innerHTML =
+    filtered.map(job => `
 
-        <div class="card job">
+      <div class="card job">
 
-          <h3>
-            💼 ${job.title}
-          </h3>
+        <h3>
+          💼 ${job.title}
+        </h3>
 
-          <p>
-            🏢 <b>Company:</b>
-            ${job.company}
-          </p>
+        <p>
+          🏢 <b>Company:</b>
+          ${job.company}
+        </p>
 
-          <p>
-            📍 <b>Location:</b>
-            ${job.location}
-          </p>
+        <p>
+          📍 <b>Location:</b>
+          ${job.location}
+        </p>
 
-          <p>
-            💰 <b>Salary:</b>
-            ${job.salary}
-          </p>
+        <p>
+          💰 <b>Salary:</b>
+          ${job.salary}
+        </p>
 
-          <p>
-            ⏰ <b>Type:</b>
-            ${job.type}
-          </p>
+        <p>
+          ⏰ <b>Type:</b>
+          ${job.type}
+        </p>
 
-          <button
-            class="apply"
-            type="button"
-            data-job-id="${job.id}"
-          >
-            📝 Apply करें
-          </button>
+        <button
+          class="apply"
+          onclick="applyJob('${job.id}')"
+        >
+          📝 Apply करें
+        </button>
 
-        </div>
+      </div>
 
-      `;
+    `).join("");
 
-    }).join("");
+};
 
-
-  document
-  .querySelectorAll("[data-job-id]")
-  .forEach(function(button){
-
-    button.addEventListener(
-      "click",
-      function(){
-
-        const jobId =
-          Number(
-            button.getAttribute("data-job-id")
-          );
-
-        applyJob(jobId);
-
-      }
-    );
-
-  });
-
-}
 
 
 /* =========================
    APPLY JOB
 ========================= */
 
-async function applyJob(jobId){
+
+window.applyJob =
+  async function(jobId){
 
   const name =
-    localStorage.getItem("kaamMileName");
+    localStorage.getItem(
+      "kaamMileName"
+    );
+
 
   const mobile =
-    localStorage.getItem("kaamMileMobile");
+    localStorage.getItem(
+      "kaamMileMobile"
+    );
 
 
-  if(!name || !mobile){
+  if(!mobile){
 
-    alert("पहले Login करें।");
+    alert(
+      "पहले Login करें।"
+    );
 
     return;
+
   }
 
 
   const job =
-    jobs.find(function(j){
-
-      return j.id === jobId;
-
-    });
+    jobs.find(
+      j => j.id === jobId
+    );
 
 
   if(!job){
 
-    alert("Job नहीं मिली।");
+    alert(
+      "Job नहीं मिली।"
+    );
 
     return;
+
   }
+
 
 
   try{
 
-    /* =========================
-       DUPLICATE CHECK
-    ========================= */
+
+    /* पहले आवेदन चेक */
 
     const q =
       query(
@@ -725,9 +812,8 @@ async function applyJob(jobId){
     }
 
 
-    /* =========================
-       SAVE APPLICATION
-    ========================= */
+
+    /* Firebase में सेव */
 
     await addDoc(
 
@@ -775,17 +861,9 @@ async function applyJob(jobId){
     );
 
 
-    showApplications();
+  }catch(error){
 
-
-  }
-
-  catch(error){
-
-    console.error(
-      "Firebase Error:",
-      error
-    );
+    console.error(error);
 
 
     alert(
@@ -794,41 +872,26 @@ async function applyJob(jobId){
 
   }
 
-}
+};
 
-
-/* =========================
-   SHOW JOBS
-========================= */
-
-function showJobs(){
-
-  jobsPage.classList.remove(
-    "hidden"
-  );
-
-  applicationsPage.classList.add(
-    "hidden"
-  );
-
-  loadJobs();
-
-}
 
 
 /* =========================
    SHOW APPLICATIONS
 ========================= */
 
-async function showApplications(){
 
-  jobsPage.classList.add(
-    "hidden"
-  );
+window.showApplications =
+  async function(){
 
-  applicationsPage.classList.remove(
-    "hidden"
-  );
+  document
+    .getElementById("jobsPage")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("applicationsPage")
+    .classList.remove("hidden");
 
 
   const mobile =
@@ -837,35 +900,33 @@ async function showApplications(){
     );
 
 
+  const list =
+    document.getElementById(
+      "applicationsList"
+    );
+
+
   if(!mobile){
 
-    applicationsList.innerHTML = `
-
-      <div class="empty">
-
-        पहले Login करें।
-
-      </div>
-
-    `;
+    list.innerHTML =
+      '<div class="empty">' +
+      'पहले Login करें।' +
+      '</div>';
 
     return;
 
   }
 
 
-  applicationsList.innerHTML = `
+  list.innerHTML =
+    '<div class="empty">' +
+    '⏳ आवेदन लोड हो रहे हैं...' +
+    '</div>';
 
-    <div class="empty">
-
-      ⏳ आवेदन लोड हो रहे हैं...
-
-    </div>
-
-  `;
 
 
   try{
+
 
     const q =
       query(
@@ -888,27 +949,27 @@ async function showApplications(){
       await getDocs(q);
 
 
+
     if(snapshot.empty){
 
-      applicationsList.innerHTML = `
+      list.innerHTML =
+        '<div class="empty">' +
 
-        <div class="empty">
+        'अभी आपने किसी Job के लिए आवेदन नहीं किया है।' +
 
-          अभी आपने किसी Job के लिए आवेदन नहीं किया है।
-
-        </div>
-
-      `;
+        '</div>';
 
       return;
 
     }
 
 
+
     let html = "";
 
 
-    snapshot.forEach(function(doc){
+
+    snapshot.forEach(doc => {
 
       const a =
         doc.data();
@@ -916,7 +977,7 @@ async function showApplications(){
 
       html += `
 
-        <div class="card job">
+        <div class="job">
 
           <h3>
             💼 ${a.Job || "Job"}
@@ -924,17 +985,17 @@ async function showApplications(){
 
           <p>
             🏢 <b>Company:</b>
-            ${a.company || "जानकारी उपलब्ध नहीं"}
+            ${a.company || ""}
           </p>
 
           <p>
             📍 <b>Location:</b>
-            ${a.location || "जानकारी उपलब्ध नहीं"}
+            ${a.location || ""}
           </p>
 
           <p>
             💰 <b>Salary:</b>
-            ${a.salary || "जानकारी उपलब्ध नहीं"}
+            ${a.salary || ""}
           </p>
 
           <p>
@@ -942,10 +1003,8 @@ async function showApplications(){
             ${a.mobile || ""}
           </p>
 
-          <p>
-            🟢 <b>
-              ${a.status || "Application submitted"}
-            </b>
+          <p class="success">
+            🟢 ${a.status || "Application submitted"}
           </p>
 
         </div>
@@ -955,141 +1014,101 @@ async function showApplications(){
     });
 
 
-    applicationsList.innerHTML =
+
+    list.innerHTML =
       html;
 
-  }
 
-  catch(error){
+  }catch(error){
 
-    console.error(
-      "Applications Error:",
-      error
-    );
+    console.error(error);
 
 
-    applicationsList.innerHTML = `
+    list.innerHTML =
 
-      <div class="empty">
+      '<div class="empty">' +
 
-        ❌ आवेदन लोड नहीं हो पाए।
+      '❌ आवेदन लोड नहीं हो पाए।' +
 
-        <br><br>
+      '<br><br>' +
 
-        Firebase Rules जाँचें।
+      'Firebase Rules जाँचें।' +
 
-      </div>
-
-    `;
+      '</div>';
 
   }
 
-}
+};
 
-
-/* =========================
-   BUTTONS
-========================= */
-
-document
-.getElementById("jobsButton")
-.addEventListener(
-  "click",
-  showJobs
-);
-
-
-document
-.getElementById("applicationsButton")
-.addEventListener(
-  "click",
-  showApplications
-);
-
-
-/* =========================
-   SEARCH
-========================= */
-
-searchInput.addEventListener(
-  "input",
-  loadJobs
-);
-
-
-locationInput.addEventListener(
-  "change",
-  loadJobs
-);
 
 
 /* =========================
    LOGOUT
 ========================= */
 
-document
-.getElementById("logoutButton")
-.addEventListener(
-  "click",
-  function(){
 
-    localStorage.removeItem(
-      "kaamMileName"
-    );
+window.logout = function(){
 
-    localStorage.removeItem(
-      "kaamMileMobile"
-    );
+  localStorage.removeItem(
+    "kaamMileName"
+  );
 
 
-    appPage.classList.add(
-      "hidden"
-    );
-
-    loginPage.classList.remove(
-      "hidden"
-    );
+  localStorage.removeItem(
+    "kaamMileMobile"
+  );
 
 
-    nameInput.value = "";
-
-    mobileInput.value = "";
-
-    searchInput.value = "";
-
-    locationInput.value = "";
+  document
+    .getElementById("appPage")
+    .classList.add("hidden");
 
 
-    alert(
-      "आप Logout हो गए हैं।"
-    );
+  document
+    .getElementById("loginPage")
+    .classList.remove("hidden");
 
-  }
-);
+
+  document.getElementById(
+    "name"
+  ).value = "";
+
+
+  document.getElementById(
+    "mobile"
+  ).value = "";
+
+};
+
 
 
 /* =========================
    AUTO LOGIN
 ========================= */
 
-const savedName =
-  localStorage.getItem(
-    "kaamMileName"
-  );
 
-const savedMobile =
-  localStorage.getItem(
-    "kaamMileMobile"
-  );
+window.addEventListener(
+  "load",
+  function(){
+
+    const mobile =
+      localStorage.getItem(
+        "kaamMileMobile"
+      );
 
 
-if(savedName && savedMobile){
+    if(mobile){
 
-  openApp();
+      openApp();
 
-}
+    }
+
+  }
+);
+
 
 </script>
 
 </body>
+
 </html>
