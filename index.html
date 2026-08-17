@@ -1033,13 +1033,11 @@ async function(jobId){
 
   }
 
-
-  const job =
-    jobs.find(
-      j => j.id === jobId
-    );
-
-
+const job =
+  jobs.find(
+    j => j.id === jobId
+  );
+ 
   if(!job){
 
     alert(
@@ -1053,25 +1051,10 @@ async function(jobId){
 
   try{
 
-    const q =
-      query(
-
-        collection(
-          db,
-          "Applications"
-        ),
-
-        where(
-          "mobile",
-          "==",
-          mobile
-        ),
-
-        where(
-          "JobId",
-          "==",
-          String(job.id)
-        )
+    
+          
+         
+        
 
       );
 
@@ -1090,7 +1073,18 @@ async function(jobId){
 
     }
 
+const q = query(
+  collection(db, "Applications"),
+  where("mobile", "==", mobile),
+  where("Job", "==", job.title)
+);
 
+const existing = await getDocs(q);
+
+if (!existing.empty) {
+  alert("आप इस Job के लिए पहले ही आवेदन कर चुके हैं।");
+  return;
+}
     await addDoc(
 
       collection(
