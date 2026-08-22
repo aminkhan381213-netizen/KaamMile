@@ -7,20 +7,30 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
  margin:0;
  font-family:Arial,sans-serif;
  background:#f4f7fb;
  color:#222
 }
+
 header{
  background:#1565c0;
  color:white;
  padding:20px;
  text-align:center
 }
-header h1{margin:0;font-size:30px}
-header p{margin:6px 0 0}
+
+header h1{
+ margin:0;
+ font-size:30px
+}
+
+header p{
+ margin:6px 0 0
+}
+
 nav{
  display:flex;
  gap:7px;
@@ -31,6 +41,7 @@ nav{
  top:0;
  z-index:5
 }
+
 nav button{
  border:0;
  padding:11px 14px;
@@ -40,11 +51,13 @@ nav button{
  font-weight:bold;
  white-space:nowrap
 }
+
 .container{
  max-width:700px;
  margin:auto;
  padding:15px
 }
+
 .card{
  background:white;
  padding:16px;
@@ -52,6 +65,7 @@ nav button{
  border-radius:14px;
  box-shadow:0 2px 8px #0002
 }
+
 input{
  width:100%;
  padding:13px;
@@ -60,6 +74,18 @@ input{
  border-radius:9px;
  font-size:15px
 }
+
+textarea{
+ width:100%;
+ padding:13px;
+ margin:6px 0;
+ border:1px solid #ccc;
+ border-radius:9px;
+ font-size:15px;
+ min-height:100px;
+ resize:vertical
+}
+
 .btn{
  width:100%;
  padding:13px;
@@ -71,8 +97,15 @@ input{
  font-size:16px;
  font-weight:bold
 }
-.green{background:#188038}
-.red{background:#d93025}
+
+.green{
+ background:#188038
+}
+
+.red{
+ background:#d93025
+}
+
 .job{
  border:1px solid #ddd;
  border-radius:12px;
@@ -80,8 +113,18 @@ input{
  margin:12px 0;
  background:#fff
 }
-.job h3{margin:0 0 8px}
-.salary{color:#188038;font-weight:bold}
+
+.job h3{
+ margin:0 0 10px;
+ font-size:20px
+}
+
+.salary{
+ color:#188038;
+ font-weight:bold;
+ font-size:17px
+}
+
 .badge{
  display:inline-block;
  padding:5px 9px;
@@ -91,15 +134,35 @@ input{
  border-radius:20px;
  font-size:12px
 }
-.hide{display:none}
+
+.hide{
+ display:none
+}
+
 .msg{
  padding:10px;
  border-radius:9px;
  margin:10px 0
 }
-.ok{background:#e6f4ea;color:#137333}
-.err{background:#fce8e6;color:#c5221f}
-.center{text-align:center}
+
+.ok{
+ background:#e6f4ea;
+ color:#137333
+}
+
+.err{
+ background:#fce8e6;
+ color:#c5221f
+}
+
+.center{
+ text-align:center
+}
+
+.small{
+ color:#666;
+ font-size:13px
+}
 </style>
 </head>
 
@@ -121,393 +184,963 @@ input{
 
 <div id="msg"></div>
 
-<!-- JOBS -->
+<!-- ================= JOBS ================= -->
+
 <section id="jobs">
+
 <div class="card">
 <h2>🔎 नौकरी खोजें</h2>
-<input id="search"
+
+<input
+id="search"
 placeholder="Job, company या location खोजें..."
 oninput="showJobs()">
+
 </div>
 
 <div id="jobList">
 <p class="center">Jobs लोड हो रही हैं...</p>
 </div>
+
 </section>
 
-<!-- ADD JOB -->
-<section id="add" class="hide">
-<div class="card">
-<h2>➕ Job जोड़ें</h2>
 
-<input id="jtitle" placeholder="Job का नाम">
-<input id="jcompany" placeholder="Company / दुकान">
-<input id="jlocation" placeholder="Location">
-<input id="jsalary" placeholder="Salary">
-<input id="jdesc" placeholder="Job की जानकारी">
+<!-- ================= ADD JOB ================= -->
+
+<section id="add" class="hide">
+
+<div class="card">
+
+<h2>➕ नई Job जोड़ें</h2>
+
+<label>नौकरी का नाम *</label>
+
+<input
+id="jtitle"
+placeholder="जैसे: Data Entry Operator">
+
+<label>Company / दुकान *</label>
+
+<input
+id="jcompany"
+placeholder="जैसे: KaamMile">
+
+<label>Location *</label>
+
+<input
+id="jlocation"
+placeholder="जैसे: Balotra, Rajasthan">
+
+<label>Salary *</label>
+
+<input
+id="jsalary"
+placeholder="जैसे: ₹12000 - ₹18000 प्रति महीना">
+
+<label>Job की जानकारी</label>
+
+<textarea
+id="jdesc"
+placeholder="Job के बारे में जानकारी लिखें..."></textarea>
 
 <button class="btn" onclick="addJob()">
-Job Publish करें
+🚀 Job Publish करें
 </button>
+
 </div>
+
 </section>
 
-<!-- APPLICATIONS -->
+
+<!-- ================= APPLICATIONS ================= -->
+
 <section id="apps" class="hide">
+
 <div class="card">
+
 <h2>📋 मेरे आवेदन</h2>
+
 <div id="appList">
 Login करके अपने आवेदन देखें।
 </div>
+
 </div>
+
 </section>
 
-<!-- ACCOUNT -->
+
+<!-- ================= ACCOUNT ================= -->
+
 <section id="account" class="hide">
 
 <div id="loginBox" class="card">
+
 <h2>🔐 Login / Register</h2>
 
-<input id="email"
+<input
+id="email"
 type="email"
 placeholder="Email">
 
-<input id="password"
+<input
+id="password"
 type="password"
 placeholder="Password (कम से कम 6 अक्षर)">
 
 <button class="btn" onclick="login()">
-Login
+🔐 Login
 </button>
 
 <button class="btn green" onclick="register()">
-नया Account बनाएँ
+👤 नया Account बनाएँ
 </button>
+
 </div>
 
+
 <div id="userBox" class="card hide">
-<h2>👤 Account</h2>
+
+<h2>👤 मेरा Account</h2>
+
 <p id="userEmail"></p>
 
+<p class="small">
+आप Login हैं। अब आप Job Apply और Job Publish कर सकते हैं।
+</p>
+
 <button class="btn red" onclick="logout()">
-Logout
+🚪 Logout
 </button>
+
 </div>
 
 </section>
 
 </div>
+
+
+<!-- ================= FIREBASE ================= -->
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+
 <script>
 
-const firebaseConfig={
+/* ================= FIREBASE CONFIG ================= */
+
+const firebaseConfig = {
+
 apiKey:"AIzaSyBVDRf48Ae6RC_zksyovEVTevC0rZtV0i0",
+
 authDomain:"kaammile-21752.firebaseapp.com",
+
 projectId:"kaammile-21752",
+
 storageBucket:"kaammile-21752.firebasestorage.app",
+
 messagingSenderId:"671205500858",
+
 appId:"1:671205500858:web:3e0acd748619b30af6df83",
+
 measurementId:"G-WKNWK425RB"
+
 };
+
+
+/* ================= FIREBASE START ================= */
 
 firebase.initializeApp(firebaseConfig);
 
-const auth=firebase.auth();
-const db=firebase.firestore();
+const auth = firebase.auth();
 
-let user=null;
-let jobs=[];
+const db = firebase.firestore();
+
+
+let user = null;
+
+let jobs = [];
+
+
+/* ================= MESSAGE ================= */
 
 function msg(text,error=false){
-let x=document.getElementById("msg");
-x.className="msg "+(error?"err":"ok");
-x.innerText=text;
+
+let x = document.getElementById("msg");
+
+x.className = "msg " + (error ? "err" : "ok");
+
+x.innerText = text;
 
 setTimeout(()=>{
-x.className="";
-x.innerText="";
+
+x.className = "";
+
+x.innerText = "";
+
 },4000);
+
 }
+
+
+/* ================= PAGE ================= */
 
 function page(name){
 
 document.querySelectorAll("section").forEach(x=>{
+
 x.classList.add("hide");
+
 });
 
-document.getElementById(name).classList.remove("hide");
+let section = document.getElementById(name);
 
-if(name==="jobs")loadJobs();
-if(name==="apps")loadApps();
-if(name==="account")updateUser();
+if(section){
+
+section.classList.remove("hide");
 
 }
+
+
+/* Jobs */
+
+if(name === "jobs"){
+
+loadJobs();
+
+}
+
+
+/* Applications */
+
+if(name === "apps"){
+
+loadApps();
+
+}
+
+
+/* Account */
+
+if(name === "account"){
+
+updateUser();
+
+}
+
+}
+
+
+/* ================= USER ================= */
 
 function updateUser(){
 
 if(user){
 
-document.getElementById("loginBox").classList.add("hide");
-document.getElementById("userBox").classList.remove("hide");
-document.getElementById("userEmail").innerText=
-"Email: "+user.email;
+document.getElementById("loginBox")
+.classList.add("hide");
+
+document.getElementById("userBox")
+.classList.remove("hide");
+
+document.getElementById("userEmail")
+.innerText =
+"Email: " + (user.email || "");
 
 }else{
 
-document.getElementById("loginBox").classList.remove("hide");
-document.getElementById("userBox").classList.add("hide");
+document.getElementById("loginBox")
+.classList.remove("hide");
+
+document.getElementById("userBox")
+.classList.add("hide");
 
 }
 
 }
+
+
+/* ================= REGISTER ================= */
 
 async function register(){
 
-let email=document.getElementById("email").value.trim();
-let pass=document.getElementById("password").value;
+let email =
+document.getElementById("email")
+.value.trim();
 
-if(!email || pass.length<6){
-msg("Email और कम से कम 6 अक्षर का Password डालें।",true);
+let pass =
+document.getElementById("password")
+.value;
+
+
+if(!email || pass.length < 6){
+
+msg(
+"Email और कम से कम 6 अक्षर का Password डालें।",
+true
+);
+
 return;
+
 }
+
 
 try{
 
-await auth.createUserWithEmailAndPassword(email,pass);
+await auth.createUserWithEmailAndPassword(
+email,
+pass
+);
 
 msg("Account बन गया! 🎉");
+
 page("jobs");
+
 
 }catch(e){
 
-msg(e.message,true);
+msg(
+"Account नहीं बना: " + e.message,
+true
+);
 
 }
 
 }
+
+
+/* ================= LOGIN ================= */
 
 async function login(){
 
-let email=document.getElementById("email").value.trim();
-let pass=document.getElementById("password").value;
+let email =
+document.getElementById("email")
+.value.trim();
+
+let pass =
+document.getElementById("password")
+.value;
+
+
+if(!email || !pass){
+
+msg(
+"Email और Password डालें।",
+true
+);
+
+return;
+
+}
+
 
 try{
 
-await auth.signInWithEmailAndPassword(email,pass);
+await auth.signInWithEmailAndPassword(
+email,
+pass
+);
 
 msg("Login सफल हुआ ✅");
+
 page("jobs");
+
 
 }catch(e){
 
-msg("Login नहीं हुआ: "+e.message,true);
+msg(
+"Login नहीं हुआ: " + e.message,
+true
+);
 
 }
 
 }
+
+
+/* ================= LOGOUT ================= */
 
 async function logout(){
+
+try{
 
 await auth.signOut();
 
 msg("Logout हो गया।");
+
 page("jobs");
-
-}
-
-async function loadJobs(){
-
-let box=document.getElementById("jobList");
-
-box.innerHTML="<p class='center'>Jobs लोड हो रही हैं...</p>";
-
-try{
-
-let snap=await db.collection("Job").get();
-
-jobs=[];
-
-snap.forEach(doc=>{
-jobs.push({
-id:doc.id,
-...doc.data()
-});
-});
-
-showJobs();
 
 }catch(e){
 
-box.innerHTML=
-"<div class='msg err'>Jobs लोड नहीं हुईं: "+
-e.message+"</div>";
+msg(
+"Logout नहीं हुआ: " + e.message,
+true
+);
 
 }
 
 }
 
-function showJobs(){
 
-let q=document.getElementById("search").value.toLowerCase();
+/* ================================================= */
+/* ================= JOB TITLE FIX ================= */
+/* ================================================= */
 
-let list=jobs.filter(j=>{
+/*
+यह function पुराने और नए दोनों Jobs के
+नाम को पहचानने की कोशिश करेगा।
 
-let text=
-(j.Job||"")+" "+
-(j.company||"")+" "+
-(j.location||"")+" "+
-(j.salary||"");
+नया format:
+Job
 
-return text.toLowerCase().includes(q);
+पुराने सम्भावित format:
+title
+jobTitle
+job
+name
+job_name
+*/
+
+function getJobTitle(job){
+
+if(!job){
+
+return "नौकरी उपलब्ध नहीं";
+
+}
+
+
+/* नया field */
+
+if(
+job.Job &&
+String(job.Job).trim()
+){
+
+return String(job.Job).trim();
+
+}
+
+
+/* दूसरा सम्भावित field */
+
+if(
+job.title &&
+String(job.title).trim()
+){
+
+return String(job.title).trim();
+
+}
+
+
+/* jobTitle */
+
+if(
+job.jobTitle &&
+String(job.jobTitle).trim()
+){
+
+return String(job.jobTitle).trim();
+
+}
+
+
+/* lowercase job */
+
+if(
+job.job &&
+String(job.job).trim()
+){
+
+return String(job.job).trim();
+
+}
+
+
+/* name */
+
+if(
+job.name &&
+String(job.name).trim()
+){
+
+return String(job.name).trim();
+
+}
+
+
+/* job_name */
+
+if(
+job.job_name &&
+String(job.job_name).trim()
+){
+
+return String(job.job_name).trim();
+
+}
+
+
+/* अगर कुछ भी नहीं मिला */
+
+return "नौकरी का नाम उपलब्ध नहीं";
+
+}
+
+
+/* ================= LOAD JOBS ================= */
+
+async function loadJobs(){
+
+let box =
+document.getElementById("jobList");
+
+box.innerHTML =
+"<p class='center'>Jobs लोड हो रही हैं...</p>";
+
+
+try{
+
+let snap =
+await db.collection("Job").get();
+
+
+jobs = [];
+
+
+snap.forEach(doc=>{
+
+let data = doc.data();
+
+
+jobs.push({
+
+id:doc.id,
+
+...data
 
 });
 
-let box=document.getElementById("jobList");
+});
 
-if(list.length===0){
 
-box.innerHTML=
-"<div class='card center'>😔 कोई Job नहीं मिली।</div>";
+showJobs();
+
+
+}catch(e){
+
+box.innerHTML =
+
+"<div class='msg err'>" +
+"Jobs लोड नहीं हुईं: " +
+safe(e.message) +
+"</div>";
+
+}
+
+}
+
+
+/* ================= SHOW JOBS ================= */
+
+function showJobs(){
+
+let searchBox =
+document.getElementById("search");
+
+
+let q =
+searchBox
+? searchBox.value.toLowerCase().trim()
+: "";
+
+
+let list =
+jobs.filter(j=>{
+
+let title =
+getJobTitle(j);
+
+let text =
+
+title + " " +
+
+(j.company || "") + " " +
+
+(j.location || "") + " " +
+
+(j.salary || "") + " " +
+
+(j.description || "");
+
+
+return text
+.toLowerCase()
+.includes(q);
+
+});
+
+
+let box =
+document.getElementById("jobList");
+
+
+if(list.length === 0){
+
+box.innerHTML =
+
+"<div class='card center'>" +
+
+"😔 कोई Job नहीं मिली।" +
+
+"</div>";
 
 return;
 
 }
 
-box.innerHTML=list.map(j=>`
+
+/* Job cards */
+
+box.innerHTML =
+
+list.map(j=>{
+
+let title =
+getJobTitle(j);
+
+
+return `
 
 <div class="job">
 
-<h3>💼 ${safe(j.Job||"Job")}</h3>
+<h3>
+💼 ${safe(title)}
+</h3>
 
-${j.company?
-`<span class="badge">🏢 ${safe(j.company)}</span>`:""}
 
-${j.location?
-`<span class="badge">📍 ${safe(j.location)}</span>`:""}
+${
+j.company
+?
+`<span class="badge">
+🏢 ${safe(j.company)}
+</span>`
+:
+""
+}
+
+
+${
+j.location
+?
+`<span class="badge">
+📍 ${safe(j.location)}
+</span>`
+:
+""
+}
+
 
 <p class="salary">
-💰 ${safe(j.salary||"Salary नहीं दी गई")}
+
+💰 ${
+safe(
+j.salary ||
+"Salary नहीं दी गई"
+)
+}
+
 </p>
 
-${j.description?
-`<p>${safe(j.description)}</p>`:""}
 
-<button class="btn"
+${
+j.description
+?
+`<p>
+📝 ${safe(j.description)}
+</p>`
+:
+""
+}
+
+
+<button
+class="btn"
 onclick="apply('${j.id}')">
+
 📝 Apply करें
+
 </button>
+
 
 </div>
 
-`).join("");
+`;
+
+}).join("");
 
 }
+
+
+/* ================= APPLY ================= */
 
 async function apply(id){
 
 if(!user){
 
-msg("पहले Login करें।",true);
+msg(
+"पहले Login करें।",
+true
+);
+
 page("account");
+
 return;
 
 }
 
-let job=jobs.find(x=>x.id===id);
 
-if(!job)return;
+let job =
+jobs.find(x=>x.id === id);
 
-let name=prompt("अपना नाम लिखें:");
 
-if(!name)return;
+if(!job){
 
-let mobile=prompt("10 अंकों का Mobile नंबर:");
+msg(
+"Job नहीं मिली।",
+true
+);
 
-if(!mobile || !/^[0-9]{10}$/.test(mobile)){
-
-msg("सही 10 अंकों का Mobile नंबर डालें।",true);
 return;
 
 }
+
+
+let jobTitle =
+getJobTitle(job);
+
+
+let name =
+prompt("अपना नाम लिखें:");
+
+
+if(!name){
+
+return;
+
+}
+
+
+let mobile =
+prompt("10 अंकों का Mobile नंबर:");
+
+
+if(
+!mobile ||
+!/^[0-9]{10}$/.test(mobile)
+){
+
+msg(
+"सही 10 अंकों का Mobile नंबर डालें।",
+true
+);
+
+return;
+
+}
+
 
 try{
 
-await db.collection("Applications").add({
+await db
+.collection("Applications")
+.add({
 
-Job:job.Job||"Job",
+Job:jobTitle,
+
 JobId:id,
-company:job.company||"",
-location:job.location||"",
-salary:job.salary||"",
+
+company:
+job.company || "",
+
+location:
+job.location || "",
+
+salary:
+job.salary || "",
+
 name:name,
+
 mobile:mobile,
-status:"Application submitted",
-applicantUid:user.uid,
-createdat:firebase.firestore.FieldValue.serverTimestamp()
+
+status:
+"Application submitted",
+
+applicantUid:
+user.uid,
+
+createdat:
+firebase.firestore.FieldValue
+.serverTimestamp()
 
 });
 
-msg("Application सफलतापूर्वक भेज दिया गया! 🎉");
+
+msg(
+"Application सफलतापूर्वक भेज दिया गया! 🎉"
+);
+
 
 }catch(e){
 
-msg("Application नहीं भेजा गया: "+e.message,true);
+msg(
+"Application नहीं भेजा गया: " +
+e.message,
+true
+);
 
 }
 
 }
+
+
+/* ================= MY APPLICATIONS ================= */
 
 async function loadApps(){
 
-let box=document.getElementById("appList");
+let box =
+document.getElementById("appList");
+
 
 if(!user){
 
-box.innerHTML="पहले Login करें।";
+box.innerHTML =
+"पहले Login करें।";
+
 return;
 
 }
 
-box.innerHTML="Applications लोड हो रहे हैं...";
+
+box.innerHTML =
+"Applications लोड हो रहे हैं...";
+
 
 try{
 
-let snap=await db.collection("Applications")
-.where("applicantUid","==",user.uid)
+let snap =
+
+await db
+.collection("Applications")
+.where(
+"applicantUid",
+"==",
+user.uid
+)
 .get();
+
 
 if(snap.empty){
 
-box.innerHTML="अभी कोई application नहीं है।";
+box.innerHTML =
+"अभी कोई application नहीं है।";
+
 return;
 
 }
 
-let html="";
+
+let html = "";
+
 
 snap.forEach(doc=>{
 
-let a=doc.data();
+let a =
+doc.data();
 
-html+=`
+
+html += `
 
 <div class="job">
 
-<h3>💼 ${safe(a.Job||"Job")}</h3>
+<h3>
+💼 ${safe(
+a.Job ||
+a.title ||
+a.jobTitle ||
+"नौकरी"
+)}
+</h3>
 
-<p>🏢 ${safe(a.company||"")}</p>
 
-<p>📍 ${safe(a.location||"")}</p>
+${
+a.company
+?
+`<p>
+🏢 ${safe(a.company)}
+</p>`
+:
+""
+}
 
-<p class="salary">💰 ${safe(a.salary||"")}</p>
+
+${
+a.location
+?
+`<p>
+📍 ${safe(a.location)}
+</p>`
+:
+""
+}
+
+
+${
+a.salary
+?
+`<p class="salary">
+💰 ${safe(a.salary)}
+</p>`
+:
+""
+}
+
+
+${
+a.name
+?
+`<p>
+👤 Applicant: ${safe(a.name)}
+</p>`
+:
+""
+}
+
+
+${
+a.mobile
+?
+`<p>
+📱 Mobile: ${safe(a.mobile)}
+</p>`
+:
+""
+}
+
 
 <span class="badge">
-📌 ${safe(a.status||"Submitted")}
+
+📌 ${
+safe(
+a.status ||
+"Submitted"
+)
+}
+
 </span>
+
 
 </div>
 
@@ -515,90 +1148,231 @@ html+=`
 
 });
 
-box.innerHTML=html;
+
+box.innerHTML = html;
+
 
 }catch(e){
 
-box.innerHTML=
-"<div class='msg err'>Applications नहीं लोड हुए: "+
-e.message+"</div>";
+box.innerHTML =
+
+"<div class='msg err'>" +
+
+"Applications नहीं लोड हुए: " +
+
+safe(e.message) +
+
+"</div>";
 
 }
 
 }
+
+
+/* ================= ADD JOB ================= */
 
 async function addJob(){
 
 if(!user){
 
-msg("Job जोड़ने के लिए Login करें।",true);
+msg(
+"Job जोड़ने के लिए Login करें।",
+true
+);
+
 page("account");
+
 return;
 
 }
 
-let title=document.getElementById("jtitle").value.trim();
-let company=document.getElementById("jcompany").value.trim();
-let location=document.getElementById("jlocation").value.trim();
-let salary=document.getElementById("jsalary").value.trim();
-let desc=document.getElementById("jdesc").value.trim();
 
-if(!title||!company||!location||!salary){
+let title =
+document
+.getElementById("jtitle")
+.value
+.trim();
 
-msg("Job, Company, Location और Salary भरें।",true);
+
+let company =
+document
+.getElementById("jcompany")
+.value
+.trim();
+
+
+let location =
+document
+.getElementById("jlocation")
+.value
+.trim();
+
+
+let salary =
+document
+.getElementById("jsalary")
+.value
+.trim();
+
+
+let desc =
+document
+.getElementById("jdesc")
+.value
+.trim();
+
+
+/* Validation */
+
+if(
+!title ||
+!company ||
+!location ||
+!salary
+){
+
+msg(
+"Job का नाम, Company, Location और Salary भरें।",
+true
+);
+
 return;
 
 }
+
+
+/* Save */
 
 try{
 
-await db.collection("Job").add({
+await db
+.collection("Job")
+.add({
+
+/*
+सबसे जरूरी field
+यही Job list में नाम दिखाएगा
+*/
 
 Job:title,
+
+/* Extra fields */
+
+title:title,
+
 company:company,
+
 location:location,
+
 salary:salary,
+
 description:desc,
+
 createdBy:user.uid,
-createdat:firebase.firestore.FieldValue.serverTimestamp()
+
+createdat:
+firebase.firestore.FieldValue
+.serverTimestamp()
 
 });
 
-msg("Job Publish हो गई! 🎉");
 
-document.getElementById("jtitle").value="";
-document.getElementById("jcompany").value="";
-document.getElementById("jlocation").value="";
-document.getElementById("jsalary").value="";
-document.getElementById("jdesc").value="";
+msg(
+"Job Publish हो गई! 🎉"
+);
+
+
+/* Clear form */
+
+document
+.getElementById("jtitle")
+.value = "";
+
+
+document
+.getElementById("jcompany")
+.value = "";
+
+
+document
+.getElementById("jlocation")
+.value = "";
+
+
+document
+.getElementById("jsalary")
+.value = "";
+
+
+document
+.getElementById("jdesc")
+.value = "";
+
+
+/* वापस Jobs */
 
 page("jobs");
 
+
 }catch(e){
 
-msg("Job नहीं जुड़ी: "+e.message,true);
+msg(
+"Job नहीं जुड़ी: " +
+e.message,
+true
+);
 
 }
 
 }
+
+
+/* ================= SAFE TEXT ================= */
 
 function safe(x){
 
 return String(x)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
 
 }
 
+
+/* ================= AUTH STATE ================= */
+
 auth.onAuthStateChanged(u=>{
 
-user=u;
+user = u;
+
 updateUser();
 
 });
+
+
+/* ================= START APP ================= */
 
 page("jobs");
 
